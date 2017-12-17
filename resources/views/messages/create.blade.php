@@ -6,7 +6,7 @@
 
     {!! Form::model($message, ['route' => 'messages.store']) !!}
     
-     {!! Form::label('title', 'タイトル:') !!}
+     {!! Form::label('title', 'ステータス:') !!}
         {!! Form::text('title') !!}
 
 

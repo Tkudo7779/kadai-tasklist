@@ -7,7 +7,7 @@
 
     {!! Form::model($message, ['route' => ['messages.update', $message->id], 'method' => 'put']) !!}
     
-    　 {!! Form::label('title', 'タイトル:') !!}
+    　 {!! Form::label('title', 'ステータス:') !!}
         {!! Form::text('title') !!}
 
         {!! Form::label('content', 'メッセージ:') !!}
