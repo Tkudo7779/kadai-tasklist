@@ -10,7 +10,22 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+// ログイン認証
+Route::get('login', 'Auth\AuthController@getLogin')->name('login.get');
+Route::post('login', 'Auth\AuthController@postLogin')->name('login.post');
+Route::get('logout', 'Auth\AuthController@getLogout')->name('logout.get');
+// ユーザ登録
+Route::get('signup', 'Auth\AuthController@getRegister')->name('signup.get');
+Route::post('signup', 'Auth\AuthController@postRegister')->name('signup.post');
 
-Route::get('/', 'MessagesController@index');
 
-Route::resource('messages', 'MessagesController');
+// 新しい方
+Route::get('/', 'WelcomeController@index');
+
+Route::group(['middleware' => 'auth'], function () {
+    Route::resource('users', 'UsersController', ['only' => ['index', 'show']]);
+    Route::resource('messages', 'MessagesController');
+});
+
+
+

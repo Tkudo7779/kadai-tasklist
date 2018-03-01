@@ -51,12 +51,19 @@ class MessagesController extends Controller
              'title' => 'required|max:10', 
             'content' => 'required|max:255',
         ]);
+
+        $request->user()->messages()->create([
+            'title'   => $request->title,
+            'content' => $request->content,
+        ]);
         
+        /*
         $message = new Message;
         $message->title = $request->title;  
         $message->content = $request->content;
         $message->save();
-
+        */
+        
         return redirect('/');
     }
 
@@ -69,7 +76,13 @@ class MessagesController extends Controller
     public function show($id)
     {
         $message = Message::find($id);
-
+        if (!$message) {
+            return redirect('/');
+        }
+        if (\Auth::user()->id != $message->user_id) {
+            return redirect('/');
+        }
+        
         return view('messages.show', [
             'message' => $message,
         ]);
@@ -84,6 +97,10 @@ class MessagesController extends Controller
     public function edit($id)
     {
          $message = Message::find($id);
+         
+         if (\Auth::user()->id != $message->user_id) {
+            return redirect('/');
+        }
 
         return view('messages.edit', [
             'message' => $message,
@@ -99,13 +116,16 @@ class MessagesController extends Controller
      */
     public function update(Request $request, $id)
     {
-         $this->validate($request, [
-             'title' => 'required|max:10',  
+        $this->validate($request, [
+            'title' => 'required|max:10',  
             'content' => 'required|max:255',
         ]);
         
-      $message = Message::find($id);
-      $message->title = $request->title;   
+        $message = Message::find($id);
+        if (\Auth::user()->id != $message->user_id) {
+            return redirect('/');
+        }
+        $message->title = $request->title;   
         $message->content = $request->content;
         $message->save();
 
@@ -120,9 +140,12 @@ class MessagesController extends Controller
      */
     public function destroy($id)
     {
-        $message = Message::find($id);
-        $message->delete();
+        $message =\App\Message::find($id);
 
-        return redirect('/');
+        if (\Auth::user()->id === $message->user_id) {
+            $message->delete();
+        }
+
+         return redirect('/');
     }
 }
